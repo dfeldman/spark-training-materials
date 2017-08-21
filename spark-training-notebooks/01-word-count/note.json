@@ -1,0 +1,176 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n\n\n## Graph Processing\nSpark includes a nascent graph processing framework called GraphX. \n\nTo try it out, we\u0027ll use a database of 67,633 airline routes. We\u0027ll use the PageRank algorithm to compute the \"most important airports\" in the world. \nA very similar project is [here](http://blog.mongodb.org/post/60179655766/pagerank-on-flights-dataset).",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        },
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1438004852492_1560455859",
+      "id": "20150727-084732_1834040984",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eGraph Processing\u003c/h2\u003e\n\u003cp\u003eSpark includes a nascent graph processing framework called GraphX.\u003c/p\u003e\n\u003cp\u003eTo try it out, we\u0027ll use a database of 67,633 airline routes. We\u0027ll use the PageRank algorithm to compute the \u0026ldquo;most important airports\u0026rdquo; in the world.\n\u003cbr  /\u003eA very similar project is \u003ca href\u003d\"http://blog.mongodb.org/post/60179655766/pagerank-on-flights-dataset\"\u003ehere\u003c/a\u003e.\u003c/p\u003e\n"
+      },
+      "dateCreated": "Jul 27, 2015 8:47:32 AM",
+      "dateStarted": "Aug 11, 2015 4:30:02 AM",
+      "dateFinished": "Aug 11, 2015 4:30:02 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md\n### Warning\nAbout every 10th time you \"play\" a cell in this notebook, you will get a \"File name too long\" error. This is due to a serious bug in Zeppelin. You can work around by clicking Interpreter and restarting the Spark interpreter. ",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439265262365_-1321965876",
+      "id": "20150811-035422_286575097",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch3\u003eWarning\u003c/h3\u003e\n\u003cp\u003eAbout every 10th time you \u0026ldquo;play\u0026rdquo; a cell in this notebook, you will get a \u0026ldquo;File name too long\u0026rdquo; error. This is due to a serious bug in Zeppelin. You can work around by clicking Interpreter and restarting the Spark interpreter.\u003c/p\u003e\n"
+      },
+      "dateCreated": "Aug 11, 2015 3:54:22 AM",
+      "dateStarted": "Aug 11, 2015 3:55:25 AM",
+      "dateFinished": "Aug 11, 2015 3:55:25 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%spark\nimport org.apache.spark._\nimport org.apache.spark.graphx._\nimport org.apache.spark.graphx.lib\n// To make some of the examples work we will also need RDD\nimport org.apache.spark.rdd.RDD\n\n\nval edges: RDD[Edge[Double]] \u003d sc.textFile(\"/data/airline-edges.tsv\").map(_.split(\"\\t\")).map(a\u003d\u003eEdge(a(0).toLong,a(1).toLong,1.0))\nval vertices: RDD[(VertexId, String)] \u003d sc.textFile(\"/data/vertices.tsv\").map(_.split(\"\\t\")).map(a\u003d\u003e(a(0).toLong,a(1)))\nval airlinesGraph \u003d Graph(vertices,edges)\nval ranked \u003d airlinesGraph.pageRank(0.01)\nval rankedWithNames \u003d ranked.vertices.join(vertices).top(10)(Ordering.by(_._2))\n\n\nprintln(rankedWithNames.mkString(\"\\n\"))\n",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439261777177_502750970",
+      "id": "20150811-025617_1048546654",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT",
+        "msg": "import org.apache.spark._\nimport org.apache.spark.graphx._\nimport org.apache.spark.graphx.lib\nimport org.apache.spark.rdd.RDD\nedges: org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[Double]] \u003d MapPartitionsRDD[2113] at map at \u003cconsole\u003e:73\nvertices: org.apache.spark.rdd.RDD[(org.apache.spark.graphx.VertexId, String)] \u003d MapPartitionsRDD[2117] at map at \u003cconsole\u003e:71\nairlinesGraph: org.apache.spark.graphx.Graph[String,Double] \u003d org.apache.spark.graphx.impl.GraphImpl@5cca747c\nranked: org.apache.spark.graphx.Graph[Double,Double] \u003d org.apache.spark.graphx.impl.GraphImpl@9c73bee\nrankedWithNames: Array[(org.apache.spark.graphx.VertexId, (Double, String))] \u003d Array((1121,(25.528485496201007,ATL)), (171,(16.071757349205598,ORD)), (2606,(15.691808264073888,LAX)), (2685,(14.611763337488625,DFW)), (3134,(13.812496538977658,CDG)), (843,(13.756001310163862,LHR)), (95,(13.406244342692398,SIN)), (2410,(13.118613534138834,DEN)), (1369,(13.048793882965272,PEK)), (1152,(12.557026641007662,FRA)))\n(1121,(25.528485496201007,ATL))\n(171,(16.071757349205598,ORD))\n(2606,(15.691808264073888,LAX))\n(2685,(14.611763337488625,DFW))\n(3134,(13.812496538977658,CDG))\n(843,(13.756001310163862,LHR))\n(95,(13.406244342692398,SIN))\n(2410,(13.118613534138834,DEN))\n(1369,(13.048793882965272,PEK))\n(1152,(12.557026641007662,FRA))\n"
+      },
+      "dateCreated": "Aug 11, 2015 2:56:17 AM",
+      "dateStarted": "Aug 11, 2015 4:24:24 AM",
+      "dateFinished": "Aug 11, 2015 4:24:48 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "%md \n## Ideas for things to try:\n - Compute the all-pairs-shortest-paths for the airlines graph. Then find the airport that is \"furthest\" from MSP in terms of airline hops. \n - Then, find the actual route to that airport (this turns out to be harder)\n - [Here](https://github.com/apache/spark/blob/master/graphx/src/main/scala/org/apache/spark/graphx/lib/ShortestPaths.scala) is a hint.",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439261815189_37614741",
+      "id": "20150811-025655_889500111",
+      "result": {
+        "code": "SUCCESS",
+        "type": "HTML",
+        "msg": "\u003ch2\u003eIdeas for things to try:\u003c/h2\u003e\n\u003cul\u003e\n\u003cli\u003eCompute the all-pairs-shortest-paths for the airlines graph. Then find the airport that is \u0026ldquo;furthest\u0026rdquo; from MSP in terms of airline hops.\u003c/li\u003e\n\u003cli\u003eThen, find the actual route to that airport (this turns out to be harder)\u003c/li\u003e\n\u003cli\u003e\u003ca href\u003d\"https://github.com/apache/spark/blob/master/graphx/src/main/scala/org/apache/spark/graphx/lib/ShortestPaths.scala\"\u003eHere\u003c/a\u003e is a hint.\u003c/li\u003e\n\u003c/ul\u003e\n"
+      },
+      "dateCreated": "Aug 11, 2015 2:56:55 AM",
+      "dateStarted": "Aug 11, 2015 4:30:17 AM",
+      "dateFinished": "Aug 11, 2015 4:30:17 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    },
+    {
+      "text": "",
+      "config": {
+        "colWidth": 12.0,
+        "graph": {
+          "mode": "table",
+          "height": 300.0,
+          "optionOpen": false,
+          "keys": [],
+          "values": [],
+          "groups": [],
+          "scatter": {}
+        }
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "jobName": "paragraph_1439264407005_1813171786",
+      "id": "20150811-034007_1349630530",
+      "result": {
+        "code": "SUCCESS",
+        "type": "TEXT"
+      },
+      "dateCreated": "Aug 11, 2015 3:40:07 AM",
+      "dateStarted": "Aug 11, 2015 3:43:22 AM",
+      "dateFinished": "Aug 11, 2015 3:43:22 AM",
+      "status": "FINISHED",
+      "progressUpdateIntervalMs": 500
+    }
+  ],
+  "name": "Graph processing",
+  "id": "2AWM7U5J4",
+  "angularObjects": {
+    "2AVQKQD9K": [],
+    "2ATX8BH7V": [],
+    "2ATB5RX81": [],
+    "2AUYNYBE4": [],
+    "2AUTDGZ5C": [],
+    "2AW5MX1KX": [],
+    "2AU855R2W": [],
+    "2AW9KNF4C": [],
+    "2AW9GGAZQ": []
+  },
+  "config": {
+    "looknfeel": "default"
+  },
+  "info": {}
+}
